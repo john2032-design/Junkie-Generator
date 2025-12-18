@@ -4,10 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>JX Key Generator — Neon</title>
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
   :root{
     --bg1: #05060a;
@@ -19,7 +16,6 @@
     --accent: #7c5cff;
     --muted: #9aa4b2;
   }
-
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
@@ -34,7 +30,6 @@
     justify-content:center;
     padding:32px;
   }
-
   .card{
     width:min(820px,96vw);
     max-width:920px;
@@ -50,8 +45,6 @@
     grid-template-columns: 1fr 360px;
     align-items:start;
   }
-
-  /* decorative neon lines */
   .card::before, .card::after{
     content:"";
     position:absolute;
@@ -69,7 +62,6 @@
                 radial-gradient(circle at 88% 90%, rgba(255,122,209,0.02), transparent);
     filter: blur(18px);
   }
-
   .panel{
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     border-radius:10px;
@@ -77,15 +69,8 @@
     border: 1px solid rgba(255,255,255,0.03);
     backdrop-filter: blur(8px) saturate(140%);
   }
-
-  header h1{
-    margin:0;
-    font-size:20px;
-    letter-spacing:0.2px;
-  }
+  header h1{margin:0;font-size:20px;letter-spacing:0.2px}
   header p{margin:8px 0 0;color:var(--muted);font-size:13px}
-
-  /* Left column */
   .left { padding-right:12px; }
   .big-cta{
     margin-top:14px;
@@ -108,14 +93,8 @@
   }
   button.primary:active{ transform:translateY(1px) }
   button.primary[disabled]{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; }
-
   .info-row{display:flex;gap:10px;align-items:center;margin-top:10px}
-  .pill{
-    font-size:12px;padding:6px 10px;border-radius:999px;background:var(--glass-2);color:var(--muted);
-    border:1px solid rgba(255,255,255,0.02)
-  }
-
-  /* Right column - result */
+  .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--glass-2);color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
   .right { padding-left:12px; display:flex;flex-direction:column; gap:12px }
   .result-box{
     min-height:72px;
@@ -130,32 +109,16 @@
     overflow-wrap: anywhere;
     position:relative;
   }
-
   .result-url{ font-family: "JetBrains Mono", monospace; font-size:14px; color:#e9f7ff; }
   .actions{ display:flex; gap:8px; margin-left:auto; align-items:center }
-
-  .icon-btn{
-    background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:8px;cursor:pointer;color:var(--muted);
-    display:inline-flex;align-items:center;gap:8px;
-  }
+  .icon-btn{ background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:8px;cursor:pointer;color:var(--muted);display:inline-flex;align-items:center;gap:8px; }
   .icon-btn:hover{ color:var(--neon-cool); border-color:rgba(126,240,255,0.10) }
-
   .small{ font-size:12px;color:var(--muted) }
-
-  .status {
-    margin-top:6px;
-  }
-
-  /* spinner */
-  .spinner{
-    width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);border-top-color:var(--neon-cool);
-    animation:spin 1s linear infinite;
-  }
+  .status { margin-top:6px; }
+  .spinner{ width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);border-top-color:var(--neon-cool); animation:spin 1s linear infinite; }
   @keyframes spin{ to{transform:rotate(360deg)} }
-
   footer{ grid-column:1/-1; color:var(--muted);display:flex;justify-content:space-between;align-items:center;font-size:13px;padding-top:6px }
   .credit{ display:flex; gap:10px; align-items:center; color:var(--muted) }
-
   @media (max-width:880px){
     .card{ grid-template-columns: 1fr; }
     .right{ order:-1 }
@@ -169,29 +132,22 @@
         <h1>JX Key Generator</h1>
         <p>Generates a Junkie-Development flow link via the JX generator API — proxied through this Vercel function.</p>
       </header>
-
       <div class="big-cta">
         <button id="generateBtn" class="primary" aria-label="Generate key">Generate key</button>
-
         <div style="display:flex;flex-direction:column;justify-content:center;">
           <div class="pill small" id="cooldownPill">Ready</div>
         </div>
       </div>
-
       <div class="info-row">
         <div class="small">API: <code style="color:var(--muted);font-family:inherit">/api/generate</code></div>
         <div style="flex:1"></div>
         <div class="small">Design: <span style="color:var(--neon-warm)">Cyberpunk</span> · Glass</div>
       </div>
-
       <div style="height:14px"></div>
-
       <div class="small status" id="statusText">Click <strong>Generate</strong> to create a new key.</div>
     </section>
-
     <aside class="right panel">
       <div class="small" style="color:var(--muted)">Generated result</div>
-
       <div class="result-box" id="resultBox" aria-live="polite">
         <div class="result-url" id="resultText">No result yet — click Generate.</div>
         <div class="actions" role="group" aria-label="Actions">
@@ -199,23 +155,19 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 9H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="small">Copy</span>
           </button>
-
           <button class="icon-btn" id="openBtn" title="Open" aria-label="Open result" disabled>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M14 3h7v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L21 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3V3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="small">Open</span>
           </button>
         </div>
       </div>
-
       <div class="small" style="color:var(--muted);margin-top:6px">Source proxied by <code>/api/generate</code> (ensures Vercel handles CORS).</div>
     </aside>
-
     <footer>
       <div class="credit">Made with <span style="color:var(--neon-cool)">♥</span> · <span style="color:var(--accent)">Neon</span> UI</div>
       <div class="small">Tip: click Copy then Open in new tab</div>
     </footer>
   </main>
-
 <script>
   const generateBtn = document.getElementById('generateBtn');
   const resultText = document.getElementById('resultText');
@@ -223,10 +175,8 @@
   const cooldownPill = document.getElementById('cooldownPill');
   const copyBtn = document.getElementById('copyBtn');
   const openBtn = document.getElementById('openBtn');
-
   let cooldown = false;
-  const COOLDOWN_MS = 2500; // short cooldown to avoid rapid calls
-
+  const COOLDOWN_MS = 2500;
   async function setCooldown(ms){
     cooldown = true;
     cooldownPill.textContent = 'Cooldown';
@@ -241,7 +191,6 @@
     cooldown = false;
     cooldownPill.textContent = 'Ready';
   }
-
   async function fetchResult(){
     setUIWhileLoading(true);
     statusText.textContent = 'Requesting new key…';
@@ -254,7 +203,6 @@
         statusText.textContent = 'Success — generated.';
         enableActions(true);
       } else if (data && data.result) {
-        // still show result if returned but status changed
         resultText.textContent = data.result;
         statusText.textContent = 'Received result (status ≠ success).';
         enableActions(true);
@@ -270,7 +218,6 @@
       setUIWhileLoading(false);
     }
   }
-
   function setUIWhileLoading(isLoading){
     generateBtn.disabled = isLoading || cooldown;
     if (isLoading){
@@ -282,19 +229,16 @@
       }
     }
   }
-
   function enableActions(enabled){
     copyBtn.disabled = !enabled;
     openBtn.disabled = !enabled;
   }
-
   generateBtn.addEventListener('click', async ()=>{
     if (cooldown) return;
     await fetchResult();
     setCooldown(COOLDOWN_MS);
-    setTimeout(()=>{ /* re-enable button after cooldown */ generateBtn.disabled = false; }, COOLDOWN_MS);
+    setTimeout(()=>{ generateBtn.disabled = false; }, COOLDOWN_MS);
   });
-
   copyBtn.addEventListener('click', async ()=>{
     const text = resultText.textContent;
     if (!text || text.startsWith('Error:')) return;
@@ -305,7 +249,6 @@
       statusText.textContent = 'Copy failed';
     }
   });
-
   openBtn.addEventListener('click', ()=>{
     const url = resultText.textContent;
     if (!url || url.startsWith('Error:')) return;
