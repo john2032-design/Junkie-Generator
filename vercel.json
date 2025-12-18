@@ -1,18 +1,22 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
-  ],
-  "functions": {
-    "api/generate.js": {
-      "runtime": "nodejs18.x",
-      "memory": 128,
-      "maxDuration": 10
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
     }
-  },
+  ],
   "routes": [
-    { "src": "/api/generate", "dest": "/api/generate.js" },
-    { "handle": "filesystem" }
+    {
+      "src": "/api/generate",
+      "dest": "/api/generate.js"
+    },
+    {
+      "handle": "filesystem"
+    }
   ]
 }
