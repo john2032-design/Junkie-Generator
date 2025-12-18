@@ -15,8 +15,6 @@
     --neon-warm: #ff7ad1;
     --accent: #7c5cff;
     --muted: #9aa4b2;
-    --ready-green-start: #34d399;
-    --ready-green-end: #10b981;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -31,11 +29,10 @@
     align-items:center;
     justify-content:center;
     padding:32px;
-    overflow:auto;
   }
   .card{
-    width:920px;
-    max-width:96vw;
+    width:min(820px,96vw);
+    max-width:920px;
     border-radius:14px;
     padding:26px;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -96,7 +93,8 @@
   }
   button.primary:active{ transform:translateY(1px) }
   button.primary[disabled]{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; }
-  .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--ready-green-start),var(--ready-green-end));color:#04121b;border:1px solid rgba(0,0,0,0.08);font-weight:700}
+  .info-row{display:flex;gap:10px;align-items:center;margin-top:10px}
+  .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--glass-2);color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
   .right { padding-left:12px; display:flex;flex-direction:column; gap:12px }
   .result-box{
     min-height:72px;
@@ -121,42 +119,29 @@
   @keyframes spin{ to{transform:rotate(360deg)} }
   footer{ grid-column:1/-1; color:var(--muted);display:flex;justify-content:space-between;align-items:center;font-size:13px;padding-top:6px }
   .credit{ display:flex; gap:10px; align-items:center; color:var(--muted) }
-  .notify{
-    position:fixed;
-    right:20px;
-    top:20px;
-    background: linear-gradient(90deg, rgba(126,240,255,0.06), rgba(255,122,209,0.04));
-    border:1px solid rgba(126,240,255,0.12);
-    padding:10px 14px;
-    border-radius:10px;
-    color:#dffdf6;
-    box-shadow: 0 8px 30px rgba(3,6,20,0.6);
-    transform: translateY(-12px);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s ease, transform .25s cubic-bezier(.2,.9,.2,1);
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    z-index:9999;
+  @media (max-width:880px){
+    .card{ grid-template-columns: 1fr; }
+    .right{ order:-1 }
   }
-  .notify.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
 </style>
 </head>
 <body>
-  <div class="notify" id="notify" role="status" aria-live="polite">Success — generated.</div>
   <main class="card" role="main" aria-live="polite">
     <section class="left panel">
       <header>
         <h1>JX Key Generator</h1>
-        <p>Generates a Junkie-Development flow link via the JX generator API.</p>
+        <p>Generates a Junkie-Development flow link via the JX generator API — proxied through this Vercel function.</p>
       </header>
       <div class="big-cta">
         <button id="generateBtn" class="primary" aria-label="Generate key">Generate key</button>
         <div style="display:flex;flex-direction:column;justify-content:center;">
           <div class="pill small" id="cooldownPill">Ready</div>
         </div>
+      </div>
+      <div class="info-row">
+        <div class="small">API: <code style="color:var(--muted);font-family:inherit">/api/generate</code></div>
+        <div style="flex:1"></div>
+        <div class="small">Design: <span style="color:var(--neon-warm)">Cyberpunk</span> · Glass</div>
       </div>
       <div style="height:14px"></div>
       <div class="small status" id="statusText">Click <strong>Generate</strong> to create a new key.</div>
@@ -176,6 +161,7 @@
           </button>
         </div>
       </div>
+      <div class="small" style="color:var(--muted);margin-top:6px">Source proxied by <code>/api/generate</code> (ensures Vercel handles CORS).</div>
     </aside>
     <footer>
       <div class="credit">Made with <span style="color:var(--neon-cool)">♥</span> · <span style="color:var(--accent)">Neon</span> UI</div>
@@ -189,14 +175,11 @@
   const cooldownPill = document.getElementById('cooldownPill');
   const copyBtn = document.getElementById('copyBtn');
   const openBtn = document.getElementById('openBtn');
-  const notify = document.getElementById('notify');
   let cooldown = false;
   const COOLDOWN_MS = 2500;
-  let notifyTimer = null;
   async function setCooldown(ms){
     cooldown = true;
     cooldownPill.textContent = 'Cooldown';
-    cooldownPill.style.background = 'linear-gradient(90deg,var(--ready-green-start),var(--ready-green-end))';
     let left = ms;
     const step = 250;
     const iv = setInterval(()=>{
@@ -207,13 +190,6 @@
     clearInterval(iv);
     cooldown = false;
     cooldownPill.textContent = 'Ready';
-    cooldownPill.style.background = 'linear-gradient(90deg,var(--ready-green-start),var(--ready-green-end))';
-  }
-  function showNotification(text){
-    if (notifyTimer) clearTimeout(notifyTimer);
-    notify.textContent = text;
-    notify.classList.add('show');
-    notifyTimer = setTimeout(()=>{ notify.classList.remove('show'); notifyTimer = null }, 4000);
   }
   async function fetchResult(){
     setUIWhileLoading(true);
@@ -224,18 +200,17 @@
       const data = await r.json();
       if (data && data.status === 'success' && data.result){
         resultText.textContent = data.result;
-        statusText.textContent = '';
+        statusText.textContent = 'Success — generated.';
         enableActions(true);
-        showNotification('Success — generated.');
       } else if (data && data.result) {
         resultText.textContent = data.result;
-        statusText.textContent = '';
+        statusText.textContent = 'Received result (status ≠ success).';
         enableActions(true);
-        showNotification('Success — generated.');
       } else {
         throw new Error('Invalid response shape');
       }
     } catch (err){
+      console.error(err);
       resultText.textContent = 'Error: ' + (err.message || 'Request failed');
       statusText.textContent = 'Failed to generate — see result box.';
       enableActions(false);
